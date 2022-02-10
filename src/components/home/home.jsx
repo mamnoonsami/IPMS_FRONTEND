@@ -13,8 +13,7 @@ function Home() {
     const handleSubmit = async(e) => {
 
         e.preventDefault();
-        //setPressed(true);
-       console.log(data);
+       //console.log(data);
     }
 
     useEffect(()=>{
