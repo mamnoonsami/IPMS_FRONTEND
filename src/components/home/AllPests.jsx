@@ -4,40 +4,85 @@ import axios from 'axios'
 import {useState, useEffect} from 'react'
 import { Link } from "react-router-dom";
 
+
 function AllPests() {
-
+    //test comment
     const cropID = useParams().cropID;
-
+    const toAdmin = {
+        pathname: "/AdminPests",
+        param1: cropID,
+    }
     const [pest, setPest] = useState([]);
     const[cropName, setCropName] = useState([]);
 
-    useEffect(()=>{
-        const fetchPests = async () =>{
-            try{
-               const res =  await axios.get(`https://localhost:44361/api/crops/getspecific/${cropID}`);
-               setCropName(res.data[0].cropName);
-               setPest(res.data[0].pestDetails);
-               console.log(res.data[0].pestDetails);
-                
-            }catch(err){
-                console.log(err);
-            }
+    const [add, setAdd] = useState(false);
+    const [user, setUser] = useState(null);
+    const[loading,setLoading] = useState(true); // for populating all the states until its false
+    const[loading1,setLoading1] = useState(true);
 
-            
-            
+    useEffect(()=>{
+        fetchUser();
+        if(loading){
+            fetchUser();
+        }
+        fetchPests();
+        if(loading1){
+            fetchPests();
         }
 
-        
-        fetchPests();
+    },[loading,loading1])
 
-    },[])
+    const fetchPests = async () =>{
+        try{
+           const res =  await axios.get(`https://localhost:44361/api/crops/getspecific/${cropID}`);
+           setCropName(res.data[0].cropName);
+           setPest(res.data[0].pestDetails);
+           console.log(res.data[0].pestDetails);
+            
+        }catch(err){
+            console.log(err);
+        }
+
+    }
+
+    const fetchUser = async() => {
+        try{
+            const res = await fetch('https://localhost:44361/api/users/getuser', {
+                headers: {"Content-Type": 'application/json;charset=UTF-8'},
+                credentials: 'include',
+            });
+
+            const content = await res.json();
+            setUser(content[0]);
+            console.log(user);
+            if(user && user.uAuthLevel=="Admin") {
+                setAdd(true);
+                
+            }
+            setLoading(false);
+          }
+          catch(e){
+            console.log(e);
+          }
+    }
 
 
 
 
     return (
         <div className="outer">
-        <h2> Select the Pest for {cropName}</h2>
+        <div className='adminStyle'> 
+            <h2> Select the Pest for {cropName}</h2>
+
+            {add && 
+            <div className='adminAccess'> 
+            <Link to={{
+                pathname : `/AdminPests/${cropID}`
+            }}>
+                <button className="editSave edit">Edit</button>
+            </Link>
+            </div>}
+        </div>
 
         <div className="cards">
             

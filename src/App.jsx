@@ -18,6 +18,7 @@ import {useEffect, useState} from 'react';
 import Comments from './components/Comments/Comments';
 import Footer from './components/Footer/Footer';
 import Admin_Crops from './components/home/Admin/Admin_Crops';
+import Admin_Pests from './components/home/Admin/Admin_Pests';
 function App() {
 
   const[name,setName] = useState(null);
@@ -73,7 +74,9 @@ function App() {
 
               <Route path="/Comments" element = {<Comments/>}/>
 
-              <Route path='/AdminCrops' element={<Admin_Crops/>}/>
+              <Route path='/AdminCrops' element={<Admin_Crops user={user}/>}/>
+
+              <Route path='/AdminPests/:cropID' element={<Admin_Pests user={user}/>}/>
 
            </Routes>
            {/* <Footer/> */}

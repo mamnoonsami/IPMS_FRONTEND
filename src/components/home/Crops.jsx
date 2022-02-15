@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import axios from 'axios'
 import './insects.css'
 import Admin_Crops from './Admin/Admin_Crops';
+import './Crops.css'
 
 function Crops() {
 
@@ -32,7 +33,7 @@ function Crops() {
 
             const content = await res.json();
             setUser(content[0]);
-            console.log(user);
+            //console.log(user);
             if(user && user.uAuthLevel=="Admin") {
                 setAdd(true);
                 

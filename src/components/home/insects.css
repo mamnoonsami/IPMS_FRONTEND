@@ -14,7 +14,7 @@
     height: inherit;
     margin-top: 2.5em;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     flex-wrap: wrap;
     background-color: rgba(228, 227, 227, 0.397);
     border-radius: 7px;
@@ -29,8 +29,8 @@
     width: 17rem;
     height: 16rem;
     text-align: center;
-    padding: 0.3em;
-    margin-bottom: 1em;
+    padding: 0.2em;
+    margin: 1em;
     border-radius: 7px;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
     transition: all 0.3s ease-in-out;
@@ -62,7 +62,9 @@ a{
 }
 
 .card:hover{
-    background-color: rgb(183, 185, 172);
+    /* background-color: rgb(183, 185, 172); */
+    background-color: rgb(162, 132, 211);
+    color: rgb(255, 255, 255);
     cursor: pointer;
 }
 .adminStyle{

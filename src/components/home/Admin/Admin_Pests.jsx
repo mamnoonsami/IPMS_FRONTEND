@@ -1,10 +1,11 @@
-import React from 'react';
+import React from 'react'
 import {useState, useEffect} from 'react';
 import axios from 'axios'
 import "./Admin_Crops.css";
 import DeleteIcon from './delete.svg';
 import {toast} from 'react-toastify';
 import Crops from '../Crops';
+import { useLocation, useParams } from 'react-router-dom';
 toast.configure()
 
 const initialImageValues = {
@@ -12,67 +13,54 @@ const initialImageValues = {
     imageSrc : '',
     imageFile : null
 }
-
-function Admin_Crops(props) {
+function Admin_Pests(props) {
     const [userAuth, SetUserAuth] = useState(props.user[0].uAuthLevel);
-    const [crop, setCrop] = useState([]);
+    //const location = useLocation(); // for getting the parameter through <Link>
+    //const {cropId} = location.state;
+    const cropId = useParams().cropID;
+    const [pest, setPest] = useState([]);
     const[loading,setLoading] = useState(true);
-    const [cropName, setCropName] = useState("");
-    const [cropDesc, setCropDesc] = useState("");
+    const [pestName, setPestName] = useState("");
+    const [pestDesc, setPestDesc] = useState("");
     const[imgValues,setImgValues] = useState(initialImageValues);
+
     useEffect(()=>{
-        fetchCrops();
+        
+        fetchPests();
         if(loading){
-            fetchCrops();
+            fetchPests();
         }
         
-    }, [loading,crop])
-    const fetchCrops = async () =>{
+    }, [loading,pest])
+
+    const fetchPests = async () =>{
         try{
             const res = await axios.get("https://localhost:44361/api/crops/getall")
             .then(res => {
-                setCrop(res.data);
+                setPest(res.data);
                 setLoading(false);
             })
         }catch(err){
             console.log(err);
         }
     }
-    const removeCrop = (e,cropId)=> {
-        e.preventDefault();
-        //console.log(props.user[0].uAuthLevel);
 
-        // setCrop(crop.filter(cr => cr.id !== cropId));
-        // console.log(cropId);
-        // console.log(crop);
-        //exampleAPI('https://localhost:44361/api/crops/DeleteCrop/').delete(cropId)
-        axios.delete(`https://localhost:44361/api/crops/DeleteCrop/${cropId}`)
-        .then(res=>{
-            toast.success('record has been deleted',{ //THE SUCCESS NOTIFICATION
-                position: toast.POSITION.TOP_RIGHT,
-                hideProgressBar: false,
-                autoClose: 2000,
-
-            });
-        })
-        
-    }
-    const editCrops = (e)=>{
+    const editPests = (e)=>{
 
         e.preventDefault();
         const formData = new FormData();
-        formData.append('CName', cropName);
-        formData.append('CDescription', cropDesc);
+        formData.append('CName', pestName);
+        formData.append('CDescription', pestDesc);
         formData.append('CImageName', imgValues.imageName);
         formData.append('CImageFile', imgValues.imageFile);
-        if(cropName && cropDesc && imgValues.imageFile){
+        if(pestName && pestDesc && imgValues.imageFile){
             exampleAPI('https://localhost:44361/api/crops/create').create(formData)
             .then(res=> {
                 console.log(res.data);
                 
                 if(res.status === 200 && res.data.message != "Conflict"){
-                    setCropName("");
-                    setCropDesc("");
+                    setPestName("");
+                    setPestDesc("");
                     document.getElementById('imageUploader').value = null; //THE CHOSEN IMAGE FILE NAME GET CLEARED AFTER COMMENT HAS BEEN POSTED
                     toast.success(res.data.message,{ //THE SUCCESS NOTIFICATION
                         position: toast.POSITION.TOP_RIGHT,
@@ -105,6 +93,21 @@ function Admin_Crops(props) {
         }
 
     }
+    const removePest = (e,cropId)=> {
+        
+        e.preventDefault();
+        console.log(props);
+        axios.delete(`https://localhost:44361/api/crops/DeleteCrop/${cropId}`)
+        .then(res=>{
+            toast.success('record has been deleted',{ //THE SUCCESS NOTIFICATION
+                position: toast.POSITION.TOP_RIGHT,
+                hideProgressBar: false,
+                autoClose: 2000,
+
+            });
+        })
+        
+    }
 
     const exampleAPI = (url) => {
         return {
@@ -136,21 +139,21 @@ function Admin_Crops(props) {
             })
         }
     }
-    
+
   return (
     <div className='adminMainDiv'>
-        { userAuth==="Admin" && <div className="addingForm">
-            <form className="cropsForm" autoComplete='off' onSubmit={editCrops}>
+       {userAuth==="Admin" && <div className="addingForm">
+            <form className="pestsForm" autoComplete='off' onSubmit={editPests}>
                 <div className="form-groups">
-                    <input name="cropName" type="text" placeholder="Crop name" required
-                    onChange={e => setCropName(e.target.value)}
-                    value={cropName}
+                    <input name="pestName" type="text" placeholder="Pest name" required
+                    onChange={e => setPestName(e.target.value)}
+                    value={pestName}
                     />
                 </div>
                 <div className="form-groups">
-                    <input className="adminCropDesc" name="cropDesc" type="text" placeholder="Short description" required
-                    onChange={e => setCropDesc(e.target.value)}
-                    value={cropDesc}
+                    <input className="adminPestDesc" name="cropDesc" type="text" placeholder="Short description" required
+                    onChange={e => setPestDesc(e.target.value)}
+                    value={pestDesc}
                     />
                 </div>
                 <div className="imageUploadDiv form-groups">
@@ -158,20 +161,19 @@ function Admin_Crops(props) {
                 </div>
                                 
                 <button className='adminSave'>Save</button>
-                {/* <p>{props.uAuthLevel}</p> */}
-                
+                <h1>{cropId}</h1>
             </form>
         </div>}
         {userAuth==="Admin" && <div className="existingData">
             <div className="adminHeading">
-                <h3>Crops</h3>
-                <h5>({crop.length} items)</h5>
+                <h3>Pests</h3>
+                <h5>({pest.length} items)</h5>
             </div>
             <div className="cropsList">
-                {crop.map(cr=>(
-                    <div className="cropItself" key={cr.id}>
-                        <p>{cr.crop}</p>
-                        <img className="adminRemoveIcon" src={DeleteIcon} alt="remove" onClick={e=> removeCrop(e,cr.id)}/>
+                {pest.map(p=>(
+                    <div className="cropItself" key={p.id}>
+                        <p>{p.crop}</p>
+                        <img className="adminRemoveIcon" src={DeleteIcon} alt="remove" onClick={e=> removePest(e,p.id)}/>
                     </div>
                 ))
                 }
@@ -181,4 +183,4 @@ function Admin_Crops(props) {
   )
 }
 
-export default Admin_Crops;
+export default Admin_Pests
