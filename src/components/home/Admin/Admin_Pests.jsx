@@ -35,18 +35,20 @@ function Admin_Pests(props) {
 
     const fetchPests = async () =>{
         try{
-            const res = await axios.get("https://localhost:44361/api/crops/getall")
-            .then(res => {
-                setPest(res.data);
+            const res =  await axios.get(`https://localhost:44361/api/crops/getspecific/${cropId}`)
+            .then(res=> {
+                setPest(res.data[0].pestDetails);
+                //console.log(pest);
                 setLoading(false);
             })
-        }catch(err){
-            console.log(err);
-        }
+             
+         }catch(err){
+             console.log(err);
+         }
     }
 
     const editPests = (e)=>{
-
+        /* Needs to be edited*/
         e.preventDefault();
         const formData = new FormData();
         formData.append('CName', pestName);
@@ -94,7 +96,7 @@ function Admin_Pests(props) {
 
     }
     const removePest = (e,cropId)=> {
-        
+        /* Needs to be edited */
         e.preventDefault();
         console.log(props);
         axios.delete(`https://localhost:44361/api/crops/DeleteCrop/${cropId}`)
@@ -116,6 +118,7 @@ function Admin_Pests(props) {
         }
     }
     const showPreview = e =>{
+        /* Needs to be edited */
         if(e.target.files && e.target.files[0]){
             let imageFile = e.target.files[0];
             //console.log(imageFile);
@@ -161,7 +164,6 @@ function Admin_Pests(props) {
                 </div>
                                 
                 <button className='adminSave'>Save</button>
-                <h1>{cropId}</h1>
             </form>
         </div>}
         {userAuth==="Admin" && <div className="existingData">
@@ -172,8 +174,8 @@ function Admin_Pests(props) {
             <div className="cropsList">
                 {pest.map(p=>(
                     <div className="cropItself" key={p.id}>
-                        <p>{p.crop}</p>
-                        <img className="adminRemoveIcon" src={DeleteIcon} alt="remove" onClick={e=> removePest(e,p.id)}/>
+                        <p>{p.pName}</p>
+                        <img className="adminRemoveIcon" src={DeleteIcon} alt="remove" onClick={e=> removePest(e,p.pId)}/>
                     </div>
                 ))
                 }

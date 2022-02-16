@@ -90,9 +90,6 @@
     background-color: rgb(216, 216, 216);
     border: 0;
 }
-.form-groups .adminCropDesc{
-    /* line-height: 50px; */
-}
 .form-groups input:focus{
     outline: none;
 }
