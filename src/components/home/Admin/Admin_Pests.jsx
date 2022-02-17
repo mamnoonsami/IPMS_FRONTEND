@@ -114,11 +114,22 @@ function Admin_Pests(props) {
         }
 
     }
-    const removePest = (e,cropId)=> {
+    const removePest = (e,pestId)=> {
         /* Needs to be edited */
         e.preventDefault();
-        console.log(props);
-        axios.delete(`https://localhost:44361/api/crops/DeleteCrop/${cropId}`)
+        
+        const formData = new FormData();
+        formData.append('PId', pestId);
+        formData.append('CId', cropId);
+        // console.log(pestId);
+        // console.log(cropId);
+        //exampleAPI("https://localhost:44361/api/CropsPests/DeletePest").delete(formData)
+        axios.delete("https://localhost:44361/api/cropspests/DeletePest", {
+            data: {
+                PId : pestId,
+                CId : cropId
+            }
+        })
         .then(res=>{
             toast.success('record has been deleted',{ //THE SUCCESS NOTIFICATION
                 position: toast.POSITION.TOP_RIGHT,
@@ -133,7 +144,7 @@ function Admin_Pests(props) {
     const exampleAPI = (url) => {
         return {
             create : newRecord => axios.post(url,newRecord),
-            delete: id => axios.delete(url)
+            delete: record => axios.delete(url,record)
         }
     }
     const showPreview = e =>{
@@ -162,6 +173,58 @@ function Admin_Pests(props) {
         }
     }
 
+    const editPestsDB = (e)=>{
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('PName', pestName);
+        formData.append('PDescription', pestDesc);
+        formData.append('PImageName', imgValues.imageName);
+        formData.append('PImageFile', imgValues.imageFile);
+        if(pestName && pestDesc && imgValues.imageFile){
+            exampleAPI('https://localhost:44361/api/pests/create').create(formData)
+            .then(res=> {
+                console.log(res.data);
+                
+                if(res.status === 200 && res.data.message != "Conflict"){
+                    setPestName("");
+                    setPestDesc("");
+                    document.getElementById('imageUploader').value = null; //THE CHOSEN IMAGE FILE NAME GET CLEARED AFTER COMMENT HAS BEEN POSTED
+                    toast.success(res.data.message,{ //THE SUCCESS NOTIFICATION
+                        position: toast.POSITION.TOP_RIGHT,
+                        hideProgressBar: false,
+                        autoClose: 2000,
+
+                    });
+                }
+                else if(res.status === 200 && res.data.message === "Conflict") //Bad  request status code. That means Conflict : already exist some data 
+                {
+                    toast.warning("A pest with this name already exists",{ //THE SUCCESS NOTIFICATION
+                        position: toast.POSITION.TOP_RIGHT,
+                        hideProgressBar: false,
+                        autoClose: 3000,
+        
+                    });
+                }
+                
+            })
+            .catch(err=> console.log(err))
+        }
+    }
+    const removePestDB = (e,pestId)=> {
+        /* Needs to be edited */
+        e.preventDefault();
+        //console.log(props);
+        axios.delete(`https://localhost:44361/api/pests/DeletePest/${pestId}`)
+        .then(res=>{
+            toast.success('record has been deleted',{ //THE SUCCESS NOTIFICATION
+                position: toast.POSITION.TOP_RIGHT,
+                hideProgressBar: false,
+                autoClose: 2000,
+
+            });
+        })
+        
+    }
   return (
     <div className='adminMainDiv'>
        {userAuth==="Admin" && <div className="addingForm addingForm1">
@@ -175,7 +238,7 @@ function Admin_Pests(props) {
                 </div>   
                 <button className='adminSave'>Add</button>
             </form>
-            <form className="pestsForm pestsFormDB" autoComplete='off' onSubmit={editPests}>
+            <form className="pestsForm pestsFormDB" autoComplete='off' onSubmit={editPestsDB}>
                 <h3>Add pest to the database</h3>
                 <div className="form-groups form-groupsDB">
                     <input name="pestName" type="text" placeholder="Pest name" required
@@ -220,7 +283,7 @@ function Admin_Pests(props) {
                 {allPest.map(p=>(
                     <div className="cropItself pestItself" key={p.id}>
                         <p>{p.pest} (Pest id = {p.pId})</p>
-                        <img className="adminRemoveIcon" src={DeleteIcon} alt="remove" onClick={e=> removePest(e,p.pId)}/>
+                        <img className="adminRemoveIcon" src={DeleteIcon} alt="remove" onClick={e=> removePestDB(e,p.pId)}/>
                     </div>
                 ))
                 }
