@@ -19,6 +19,7 @@ import Comments from './components/Comments/Comments';
 import Footer from './components/Footer/Footer';
 import Admin_Crops from './components/home/Admin/Admin_Crops';
 import Admin_Pests from './components/home/Admin/Admin_Pests';
+import ExampleComment from './components/Comments/ExampleComment';
 function App() {
 
   const[name,setName] = useState(null);
@@ -73,6 +74,8 @@ function App() {
               <Route path="/Pest/Description/:pestID" element={<PestDescription/>}/>
 
               <Route path="/Comments" element = {<Comments/>}/>
+
+              <Route path="/Example" element = {<ExampleComment/>}/>
 
               <Route path='/AdminCrops' element={<Admin_Crops user={user}/>}/>
 

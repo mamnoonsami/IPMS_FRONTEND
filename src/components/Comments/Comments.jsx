@@ -128,7 +128,37 @@ const Comments = () => {
     }
     
 
+    // const showPreview = e =>{
+    //     console.log(e.target.files)
+    //     var files = e.target.files;
+    //     var formD = new FormData();
+
+    //     formD.append('UId', userId);
+    //     formD.append('UEmail', userEmail);
+    //     formD.append('FComment', comment);
+    //     //formD.append('FImageName', imgValues.imageName);
+    //     formD.append('FImageFile', files );
+
+
+    //     exampleAPI().create(formD)
+    //     .then( res => {
+            
+    //         setComment(""); // AFTER THE COMMENT IS POSTED THE COMMENT GET CLEARED FROM THE COMMENT BOX
+    //         document.getElementById('imageUploader').value = null; //THE CHOSEN IMAGE FILE NAME GET CLEARED AFTER COMMENT HAS BEEN POSTED
+    //         setLoading(true);
+        
+    //         toast.success('Comment has been posted',{ //THE SUCCESS NOTIFICATION
+    //             position: toast.POSITION.TOP_RIGHT,
+    //             hideProgressBar: false,
+    //             autoClose: 2000,
+
+    //         });
+    //     })
+    //     .catch(err=> console.log(err))
+
+    // }
     const showPreview = e =>{
+        //console.log(e.target.files)
         if(e.target.files && e.target.files[0]){
             let imageFile = e.target.files[0];
             //console.log(imageFile);
@@ -139,7 +169,7 @@ const Comments = () => {
                     imageFile,
                     imageSrc: x.target.result
                 })
-               // console.log(x.target.result);
+                console.log(imgValues);
             }
             reader.readAsDataURL(imageFile);
         }
@@ -164,7 +194,7 @@ const Comments = () => {
                                 value={comment}
                             />
                             <div className="imageUploadDiv">
-                                <input type="file" accept='image/*' className='imageFile' onChange={showPreview} id="imageUploader"/>
+                                <input type="file" accept='image/*' className='imageFile' onChange={showPreview} id="imageUploader" multiple/>
                             </div>
                             
                             <button>Comment</button>
